@@ -27,10 +27,13 @@ public class Node implements Serializable {
   }
 
   public Node(double x, double y) {
-    this();
-    this.name ="";
-    this.diameter=50;
-    this.coordination=new Pair<>(x,y);
+    this("",75,x,y);
+  }
+  public Node(String name, double x, double y) {
+    this(name,75,x,y);
+  }
+  public Node(double diameter, double x, double y) {
+    this("",diameter,x,y);
   }
 
   private Node() {

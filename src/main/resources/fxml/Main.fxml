@@ -28,6 +28,6 @@
           </Menu>
         </menus>
       </MenuBar>
-      <AnchorPane fx:id="PlanePane" layoutY="28.0" onKeyTyped="#onPlaneKeyPressed" onMouseClicked="#onPlaneMouseClicked" onMouseDragged="#onPlaneMouseDragged" onMousePressed="#onPlaneMousePressed" onMouseReleased="#onPlaneMouseReleased" onScroll="#onPlaneScroll" prefHeight="710.0" prefWidth="1301.0" style="-fx-background-color: FFF;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="28.0" />
+      <AnchorPane fx:id="planePane" layoutY="28.0" onKeyTyped="#onPlaneKeyPressed" onMouseClicked="#onPlaneMouseClicked" onMouseDragged="#onPlaneMouseDragged" onMousePressed="#onPlaneMousePressed" onMouseReleased="#onPlaneMouseReleased" onScroll="#onPlaneScroll" prefHeight="710.0" prefWidth="1301.0" style="-fx-background-color: FFF;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="28.0" />
    </children>
 </AnchorPane>
