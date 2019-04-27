@@ -105,7 +105,7 @@ public class Node implements Serializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, coordination, diameter, isEndNode, goingTo, comingFrom);
+    return Objects.hash(name, coordination, diameter, isEndNode);
   }
 
   //endregion overriden methods

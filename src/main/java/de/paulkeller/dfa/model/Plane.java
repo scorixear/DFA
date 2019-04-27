@@ -2,7 +2,9 @@ package de.paulkeller.dfa.model;
 
 
 import java.io.*;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
@@ -24,6 +26,30 @@ public class Plane implements Serializable {
     nodes = new HashMap<>();
     topleft = new Pair<>(leftx,topy);
     bottomright = new Pair<>(rightx,bottomy);
+  }
+
+  public void addNode(Node... nodes) throws InvalidParameterException{
+   for(Node n:nodes) {
+     if(this.nodes.containsKey(n)) {
+       throw new InvalidParameterException("Node is already in this plane");
+     }
+    }
+   for(Node n:nodes) {
+     this.nodes.put(n,new ArrayList<>(n.getGoingTo()));
+   }
+  }
+
+  public void addConnection(Node n, Connection... connections) throws InvalidParameterException{
+    if(nodes.keySet().contains(n)) {
+      ArrayList<Connection> conns = nodes.get(n);
+      for(Connection c:connections) {
+        if(!conns.contains(c)){
+          conns.add(c);
+        }
+      }
+    }else {
+      throw new InvalidParameterException("Node not in this plane");
+    }
   }
 
   public ArrayList<Node> getNodes() {
@@ -59,6 +85,4 @@ public class Plane implements Serializable {
     fos.close();
     return p;
   }
-
-
 }
