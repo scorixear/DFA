@@ -4,6 +4,7 @@ import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Paul Keller
@@ -89,56 +90,24 @@ public class Node {
   //endregion Getter and Setter
 
   //region overriden methods
+
   @Override
-  public boolean equals(Object o){
-    if(o instanceof Node) {
-      if(this.getName().equals(((Node) o).getName()) == false) {
-        return false;
-      }
-      if(this.coordination.getKey().equals(((Node) o).getCoordination().getKey()) == false
-      && this.coordination.getValue().equals(((Node) o).getCoordination().getValue()) == false) {
-        return false;
-      }
-      if(this.getDiameter() != ((Node) o).getDiameter()) {
-        return false;
-      }
-      ArrayList<Connection> connections = new ArrayList<>(this.getComingFrom());
-      for(Connection c : ((Node) o).getComingFrom()) {
-        if(connections.contains(c)) {
-          connections.remove(c);
-        }else {
-          return false;
-        }
-      }
-      if(!connections.isEmpty()){
-        return false;
-      }
-      connections = new ArrayList<>(this.getGoingTo());
-      for(Connection c : ((Node) o).getGoingTo()) {
-        if(connections.contains(c)){
-          connections.remove(c);
-        } else {
-          return false;
-        }
-      }
-      return connections.isEmpty();
-    }
-    return false;
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Node node = (Node) o;
+    return Double.compare(node.diameter, diameter) == 0 &&
+        isEndNode == node.isEndNode &&
+        name.equals(node.name) &&
+        coordination.equals(node.coordination) &&
+        goingTo.equals(node.goingTo) &&
+        comingFrom.equals(node.comingFrom);
   }
 
   @Override
   public int hashCode() {
-    int sum = 0;
-    for(Connection c:comingFrom) {
-      sum += c.hashCode();
-    }
-    for(Connection c:goingTo) {
-      sum += c.hashCode();
-    }
-    sum+=name.hashCode();
-    sum+=diameter;
-    sum+=coordination.hashCode();
-    return sum;
+    return Objects.hash(name, coordination, diameter, isEndNode, goingTo, comingFrom);
   }
+
   //endregion overriden methods
 }

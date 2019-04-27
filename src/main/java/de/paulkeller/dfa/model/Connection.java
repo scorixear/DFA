@@ -1,5 +1,7 @@
 package de.paulkeller.dfa.model;
 
+import java.util.Objects;
+
 /**
  * @author Paul Keller
  * @version 1.0
@@ -39,5 +41,58 @@ public class Connection {
     this.arc = arc;
   }
   //endregion Constructors
+  //region Getter and Setter
+  public Node getFrom() {
+    return from;
+  }
+
+  public void setFrom(Node from) {
+    this.from = from;
+  }
+
+  public Node getTo() {
+    return to;
+  }
+
+  public void setTo(Node to) {
+    this.to = to;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public double getArc() {
+    return arc;
+  }
+
+  public void setArc(double arc) {
+    this.arc = arc;
+  }
+  //endregion Getter and Setter
+
+  //region Overriden Methods
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Connection that = (Connection) o;
+    return Double.compare(that.arc, arc) == 0 &&
+        Objects.equals(from, that.from) &&
+        Objects.equals(to, that.to) &&
+        Objects.equals(name, that.name);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(from, to, name, arc);
+  }
+
+  //endregion Overriden Methods
 
 }
