@@ -1,0 +1,21 @@
+# Gradle build results, gradle cache
+build/
+.gradle/
+
+# Ignore top level log files and directories
+*.log
+logs/
+
+# IntelliJ specific files
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+bash.exe.stackdump
+
+# Eclipse specific files
+bin/
+.settings/
+.classpath
+.project

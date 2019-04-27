@@ -1,0 +1,52 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+group 'paulkeller'
+version '1.0'
+
+mainClassName = 'de.paulkeller.dfa.Main'
+
+
+def currentOS = org.gradle.internal.os.OperatingSystem.current()
+def platform
+if (currentOS.isWindows()) {
+    platform = 'win'
+} else if (currentOS.isLinux()) {
+    platform = 'linux'
+} else if (currentOS.isMacOsX()) {
+    platform = 'mac'
+}
+
+
+
+
+compileJava {
+    options.encoding = 'UTF-8'
+    sourceCompatibility = '1.10'
+}
+
+
+
+repositories {
+    google()
+    jcenter()
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile "org.openjfx:javafx-base:11:${platform}"
+    compile "org.openjfx:javafx-graphics:11:${platform}"
+    compile "org.openjfx:javafx-controls:11:${platform}"
+    compile "org.openjfx:javafx-fxml:11:${platform}"
+}
+
+jar {
+    manifest {
+        attributes(
+                'Class-Path': configurations.compile.collect{it.getName()}.join(' '),
+                'Main-Class': 'de.paulkeller.dfa.Main'
+        )
+    }
+}
