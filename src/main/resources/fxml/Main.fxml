@@ -1,13 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="738.0" prefWidth="1301.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.paulkeller.dfa.view.MainController">
+   <children>
+      <MenuBar prefHeight="25.0" prefWidth="1301.0" stylesheets="@../css/Main.css" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#onSaveClick" text="Save" />
+                  <MenuItem mnemonicParsing="false" onAction="#onSaveAsClick" text="Save as ..." />
+                  <MenuItem mnemonicParsing="false" onAction="#onLoadClick" text="Load" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#onClearClick" text="Clear" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#onAboutClick" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <AnchorPane fx:id="PlanePane" layoutY="28.0" onKeyTyped="#onPlaneKeyPressed" onMouseClicked="#onPlaneMouseClicked" onMouseDragged="#onPlaneMouseDragged" onMousePressed="#onPlaneMousePressed" onMouseReleased="#onPlaneMouseReleased" onScroll="#onPlaneScroll" prefHeight="710.0" prefWidth="1301.0" style="-fx-background-color: FFF;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="28.0" />
+   </children>
 </AnchorPane>

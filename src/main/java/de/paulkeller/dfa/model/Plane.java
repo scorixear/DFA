@@ -4,7 +4,6 @@ package de.paulkeller.dfa.model;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -12,7 +11,7 @@ import java.util.stream.Collectors;
  * @version 1.0
  */
 public class Plane implements Serializable {
-  private HashMap<Node, Connection> nodes;
+  private HashMap<Node, ArrayList<Connection>> nodes;
   private Pair<Double, Double> topleft;
   private Pair<Double, Double> bottomright;
 
@@ -35,7 +34,11 @@ public class Plane implements Serializable {
 
   public ArrayList<Connection> getConnections(){
     ArrayList<Node> nodes = getNodes();
-    ArrayList<Connection> allConnections = new ArrayList<>(this.nodes.values());
+    ArrayList<Connection> allConnections = new ArrayList<>();
+    this.nodes.values().forEach(x-> x.forEach(y-> {
+      if(!allConnections.contains(y))
+        allConnections.add(y);
+    }));
     return allConnections.stream().filter(x->nodes.contains(x.getTo())||nodes.contains(x.getFrom())).collect(Collectors.toCollection(ArrayList::new));
   }
 

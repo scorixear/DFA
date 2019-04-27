@@ -1,0 +1,5 @@
+.menu-bar { /* modify the selector according to your needs */
+    -fx-border-style: none;
+    -fx-border-width: 1;
+    -fx-border-color: black;
+}
