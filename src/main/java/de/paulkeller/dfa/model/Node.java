@@ -10,6 +10,8 @@ import java.util.Objects;
  * @version 1.0
  */
 public class Node implements Serializable {
+  public static final double STANDARD_DIAMETER = 75;
+
   private String name;
   private Pair<Double, Double> coordination;
   private double diameter;
@@ -27,10 +29,10 @@ public class Node implements Serializable {
   }
 
   public Node(double x, double y) {
-    this("",75,x,y);
+    this("",STANDARD_DIAMETER,x,y);
   }
   public Node(String name, double x, double y) {
-    this(name,75,x,y);
+    this(name,STANDARD_DIAMETER,x,y);
   }
   public Node(double diameter, double x, double y) {
     this("",diameter,x,y);
