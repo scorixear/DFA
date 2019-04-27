@@ -1,12 +1,13 @@
 package de.paulkeller.dfa.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * @author Paul Keller
  * @version 1.0
  */
-public class Connection {
+public class Connection implements Serializable {
   private Node from;
   private Node to;
   private String name;

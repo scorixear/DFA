@@ -1,12 +1,13 @@
 package de.paulkeller.dfa.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * @author Paul Keller
  * @version 1.0
  */
-public class Pair<T extends Comparable<T>,E extends Comparable<E>> {
+public class Pair<T extends Comparable<T> & Serializable,E extends Comparable<E> & Serializable> implements Serializable {
   private T x;
   private E y;
 

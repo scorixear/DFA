@@ -1,5 +1,6 @@
 package de.paulkeller.dfa.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -8,7 +9,7 @@ import java.util.Objects;
  * @author Paul Keller
  * @version 1.0
  */
-public class Node {
+public class Node implements Serializable {
   private String name;
   private Pair<Double, Double> coordination;
   private double diameter;
