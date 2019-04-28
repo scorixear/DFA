@@ -108,6 +108,9 @@ public class Node implements Serializable {
   public Pair<Double, Double> getCoordination() {
     return coordination;
   }
+  public void setCoordination(double x, double y) {
+    coordination = new Pair<>(x,y);
+  }
 
   public double getDiameter() {
     return diameter;
@@ -148,6 +151,8 @@ public class Node implements Serializable {
     goingTo = new ArrayList<>();
     comingFrom = new ArrayList<>();
   }
+
+
 
 
   //endregion overriden methods
