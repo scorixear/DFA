@@ -9,6 +9,8 @@ import javafx.scene.shape.*;
 import java.io.IOException;
 
 /**
+ * Represent graphical Connection
+ * by drawing a path with a quadcurve
  * @author Paul Keller
  * @version 1.0
  */
@@ -17,12 +19,21 @@ public class ConnectionCurve extends Pane {
   private Connection connection;
   private MainController mainController;
   private NodePane startNode;
+  private NodePane endNode;
   @FXML
   public Path path;
   public MoveTo startMove;
   public QuadCurveTo quadcurve;
   public Polygon head;
 
+  /**
+   * ConnectionsCurve can have null as startNode
+   * All other Parameters must be set
+   * @param style
+   * @param c
+   * @param mainController
+   * @param startNode
+   */
   public ConnectionCurve(String style, Connection c, MainController mainController, NodePane startNode) {
     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(style));
     fxmlLoader.setRoot(this);
@@ -37,6 +48,7 @@ public class ConnectionCurve extends Pane {
     this.startNode = startNode;
   }
 
+  //region wrapper Methods
   public NodePane getStartNode() {
     return startNode;
   }
@@ -85,5 +97,14 @@ public class ConnectionCurve extends Pane {
   }
   public double getControlY() {
     return quadcurve.getControlY()+getLayoutY();
+  }
+  //endregion Wrapper Methods
+
+  public NodePane getEndNode() {
+    return endNode;
+  }
+
+  public void setEndNode(NodePane endNode) {
+    this.endNode = endNode;
   }
 }

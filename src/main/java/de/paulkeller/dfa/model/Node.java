@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * Nodes represent the main Component of a DFA
+ * It contains a diameter (circle diameter)
+ * a name and the Coordination on the plane
+ * as well as all Connections from(goingTo) and To(comingFrom) this Node
  * @author Paul Keller
  * @version 1.0
  */
@@ -21,6 +25,14 @@ public class Node implements Serializable {
   private ArrayList<Connection> comingFrom;
 
   //region Constructors
+
+  /**
+   * Full constructor
+   * @param name
+   * @param diameter
+   * @param x
+   * @param y
+   */
   public Node(String name, double diameter, double x, double y) {
     this();
     this.name=name;
@@ -28,12 +40,25 @@ public class Node implements Serializable {
     this.coordination = new Pair<>(x,y);
   }
 
+  /**
+   * Standarc Constructor with diameter 75 and no name
+   * @param x
+   * @param y
+   */
   public Node(double x, double y) {
     this("",STANDARD_DIAMETER,x,y);
   }
+
+  /**
+   * Standard Constructor with name and diameter 75
+   * @param name
+   * @param x
+   * @param y
+   */
   public Node(String name, double x, double y) {
     this(name,STANDARD_DIAMETER,x,y);
   }
+  //Standard Constructor with no name
   public Node(double diameter, double x, double y) {
     this("",diameter,x,y);
   }
@@ -119,6 +144,10 @@ public class Node implements Serializable {
     return Objects.hash(name, coordination, diameter, isEndNode);
   }
 
+  public void clearConnections() {
+    goingTo = new ArrayList<>();
+    comingFrom = new ArrayList<>();
+  }
 
 
   //endregion overriden methods

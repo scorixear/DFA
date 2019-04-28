@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 /**
+ * This Plane contains all Connections and Nodes but no Information about the "connection" between Nodes and Connections.
+ * All Connection information are hold in Connections and Nodes
  * @author Paul Keller
  * @version 1.0
  */
@@ -16,6 +18,9 @@ public class Plane implements Serializable {
   private Pair<Double, Double> topleft;
   private Pair<Double, Double> bottomright;
 
+  /**
+   * Standard Plane with no space for nodes
+   */
   public Plane() {
     nodes = new ArrayList<>();
     connections = new ArrayList<>();
@@ -23,6 +28,13 @@ public class Plane implements Serializable {
     bottomright = new Pair<>(0.0, 0.0);
   }
 
+  /**
+   * Standard Plane with set space
+   * @param leftx
+   * @param topy
+   * @param rightx
+   * @param bottomy
+   */
   public Plane(double leftx, double topy, double rightx, double bottomy) {
     nodes = new ArrayList<>();
     connections = new ArrayList<>();
@@ -30,6 +42,13 @@ public class Plane implements Serializable {
     bottomright = new Pair<>(rightx, bottomy);
   }
 
+  /**
+   * Loads a Plane Object from a given Path
+   * @param filename
+   * @return
+   * @throws IOException
+   * @throws ClassNotFoundException
+   */
   public static Plane load(String filename) throws IOException, ClassNotFoundException {
     File f = new File(filename);
     InputStream fos = new FileInputStream(f);
@@ -39,6 +58,11 @@ public class Plane implements Serializable {
     return p;
   }
 
+  /**
+   * Adds a Node and all its Connections to the Plane
+   * @param nodes
+   * @throws InvalidParameterException
+   */
   public void addNode(Node... nodes) throws InvalidParameterException {
     for (Node n : nodes) {
       if (this.nodes.contains(n)) {
@@ -60,6 +84,11 @@ public class Plane implements Serializable {
     }
   }
 
+  /**
+   * adds Connections to the plane
+   * @param connections
+   * @throws InvalidParameterException
+   */
   public void addConnection(Connection... connections) throws InvalidParameterException {
     for (Connection c : connections) {
       if (!this.connections.contains(c)) {
@@ -68,17 +97,30 @@ public class Plane implements Serializable {
     }
   }
 
+  /**
+   * Returns all Nodes, that are visibible in the current space
+   * @return
+   */
   public ArrayList<Node> getNodes() {
     return this.nodes.stream()
         .filter(x -> topleft.isSmallerOrEqual(x.getCoordination()) && bottomright.isBiggerOrEqual(x.getCoordination()))
         .collect(Collectors.toCollection(ArrayList::new));
   }
 
+  /**
+   * returns all connections that are visible(or half visible) in the current space
+   * @return
+   */
   public ArrayList<Connection> getConnections() {
     ArrayList<Node> nodes = getNodes();
     return connections.stream().filter(x -> nodes.contains(x.getTo()) || nodes.contains(x.getFrom())).collect(Collectors.toCollection(ArrayList::new));
   }
 
+  /**
+   * saves this plane object to a file
+   * @param filename
+   * @throws IOException
+   */
   public void save(String filename) throws IOException {
     File f = new File(filename);
     if (!f.exists())
@@ -89,6 +131,11 @@ public class Plane implements Serializable {
     fos.close();
   }
 
+  /**
+   * removes a node from the plane resulting in removal of all Connections
+   * this node was associated with
+   * @param node
+   */
   public void removeNode(Node node) {
     //Remove Connection from ConnectionPool
 
@@ -114,15 +161,29 @@ public class Plane implements Serializable {
 
   }
 
+  /**
+   * returns all Nodes in the plane
+   * @return
+   */
   public ArrayList<Node> getAllNodes() {
     return nodes;
   }
 
+  /**
+   * Clears all Nodes from the plane (including connections)
+   */
   public void clearNodes() {
     nodes = new ArrayList<>();
+    connections = new ArrayList<>();
   }
 
+  /**
+   * Clears all Connections (excluding nodes)
+   */
   public void clearConnections() {
+    nodes.forEach(n->{
+      n.clearConnections();
+    });
     connections = new ArrayList<>();
   }
 }

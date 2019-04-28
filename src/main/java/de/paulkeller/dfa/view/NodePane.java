@@ -11,6 +11,8 @@ import javafx.scene.shape.Circle;
 import java.io.IOException;
 
 /**
+ * Represents graphical Node
+ * as a circle with text
  * @author Paul Keller
  * @version 1.0
  */
@@ -25,6 +27,12 @@ public class NodePane extends AnchorPane {
   private Node node;
   private MainController mainController;
 
+  /**
+   * Standard constructor, can load endstyle
+   * @param style
+   * @param n
+   * @param mainController
+   */
   public NodePane(String style, Node n, MainController mainController) {
     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(style));
     fxmlLoader.setRoot(this);

@@ -5,7 +5,6 @@ import de.paulkeller.dfa.model.Node;
 import de.paulkeller.dfa.model.Pair;
 import de.paulkeller.dfa.model.Plane;
 import javafx.event.ActionEvent;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
@@ -13,6 +12,8 @@ import javafx.scene.layout.AnchorPane;
 import java.util.ArrayList;
 
 /**
+ * Represents graphical plane
+ * Containing drawing logic
  * @author Paul Keller
  * @version 1.0
  */
@@ -64,7 +65,7 @@ public class MainController {
 
   //region Plane Methods
   public void onPlaneKeyPressed(KeyEvent keyEvent) {
-    System.out.println(keyEvent);
+    //System.out.println(keyEvent);
     if(keyEvent.getCode().equals(KeyCode.SHIFT)) {
       keysPressed.add("SHIFT");
     }else if(keyEvent.getCode().isLetterKey()||keyEvent.getCode().isDigitKey()){
@@ -147,10 +148,21 @@ public class MainController {
       if (isNode != null) {
         plane.removeNode(isNode);
         ArrayList<javafx.scene.Node> children = new ArrayList<>(planePane.getChildren());
+        NodePane nodePane = null;
         for (javafx.scene.Node n : children) {
-          if (isNode.getCoordination().equals(new Pair<>(n.getLayoutX(), n.getLayoutY()))) {
-            planePane.getChildren().remove(n);
-            break;
+          if(n instanceof NodePane) {
+            if (isNode.getCoordination().equals(new Pair<>(n.getLayoutX(), n.getLayoutY()))) {
+              planePane.getChildren().remove(n);
+              nodePane = (NodePane)n;
+              break;
+            }
+          }
+        }
+        for (javafx.scene.Node n : children) {
+          if(n instanceof ConnectionCurve) {
+            if(((ConnectionCurve) n).getStartNode().equals(nodePane)||((ConnectionCurve) n).getEndNode().equals(nodePane)) {
+              planePane.getChildren().remove(n);
+            }
           }
         }
       }
@@ -283,13 +295,14 @@ public class MainController {
           double endx = secondSelectedNode.getLayoutX()+secondSelectedNode.getNode().getDiameter()/2;
           double endy = secondSelectedNode.getLayoutY()+secondSelectedNode.getNode().getDiameter()/2;
           Pair<Double, Double> calculated = calculateDiameterDiff(endx, endy, secondSelectedNode.getNode().getDiameter(),currentConnection.getControlX(), currentConnection.getControlY());
-
+          currentConnection.setEndNode(secondSelectedNode);
           currentConnection.setEndX(calculated.getX());
           currentConnection.setEndY(calculated.getY());
+          currentConnection = null;
+          return;
         }
-      } else {
-        planePane.getChildren().remove(currentConnection);
       }
+      planePane.getChildren().remove(currentConnection);
 
     }
 
@@ -320,5 +333,4 @@ public class MainController {
   public void setSelectedNode(NodePane node) {
     selectedNode = node;
   }
-
 }
