@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.MoveTo?>
+<?import javafx.scene.shape.Path?>
+<?import javafx.scene.shape.Polygon?>
+<?import javafx.scene.shape.QuadCurveTo?>
+
+
+<fx:root type="Pane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Path fx:id="path" fill="#ffffff00" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeMiterLimit="5.0">
+          <elements>
+              <MoveTo fx:id="startMove" />
+              <QuadCurveTo fx:id="quadcurve" controlX="500.0" x="500.0" y="500.0" />
+          </elements>
+      </Path>
+      <Polygon fx:id="head" layoutX="500.0" layoutY="566.0" points="-20.0, -88.0, 18.0, -88.0, 0.0, -60.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+   </children>
+</fx:root>

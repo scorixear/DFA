@@ -121,4 +121,8 @@ public class Plane implements Serializable {
   public void clearNodes() {
     nodes = new ArrayList<>();
   }
+
+  public void clearConnections() {
+    connections = new ArrayList<>();
+  }
 }
