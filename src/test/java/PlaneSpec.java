@@ -48,8 +48,23 @@ public class PlaneSpec {
     assertThat(plane.getConnections()).containsExactly(c);
     assertThrows(InvalidParameterException.class,()->plane.addNode(n));
     Connection ccopy = new Connection(n,n);
-    plane.addConnection(n,ccopy);
+    plane.addConnection(ccopy);
     assertThat(plane.getConnections()).containsExactly(ccopy);
+  }
+
+  @Test
+  void removeNodeAndConnections() {
+    Node n = new Node(0,0);
+    Connection c = new Connection(n,n);
+    Node x = new Node(0,1);
+    Connection a = new Connection(n,x);
+    Connection b = new Connection(x,x);
+    plane.addNode(n,x);
+    plane.removeNode(n);
+    assertThat(plane.getNodes()).containsExactly(x);
+    assertThat(plane.getConnections()).containsExactly(b);
+    assertThat(x.getComingFrom()).containsExactly(b);
+    assertThat(x.getGoingTo()).containsExactly(b);
   }
 
 

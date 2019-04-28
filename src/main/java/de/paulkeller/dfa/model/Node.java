@@ -54,15 +54,21 @@ public class Node implements Serializable {
   public void removeComingFrom(int idx) {
     comingFrom.remove(idx);
   }
+  public void removeComingFrom(Connection c) {
+    comingFrom.remove(c);
+  }
   public void removeGoingTo(int idx) {
     goingTo.remove(idx);
   }
+  public void removeGoingTo(Connection c) {
+    goingTo.remove(c);
+  }
 
   public List<Connection> getGoingTo() {
-    return List.copyOf(goingTo);
+    return goingTo;
   }
   public List<Connection> getComingFrom() {
-    return List.copyOf(comingFrom);
+    return comingFrom;
   }
 
 
@@ -112,6 +118,8 @@ public class Node implements Serializable {
   public int hashCode() {
     return Objects.hash(name, coordination, diameter, isEndNode);
   }
+
+
 
   //endregion overriden methods
 }

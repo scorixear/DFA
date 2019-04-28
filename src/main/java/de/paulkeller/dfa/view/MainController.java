@@ -49,6 +49,16 @@ public class MainController {
   }
 
   public void onClearClick(ActionEvent actionEvent) {
+    for (Node n:plane.getAllNodes()) {
+        ArrayList<javafx.scene.Node> children = new ArrayList<>(planePane.getChildren());
+        for(javafx.scene.Node nodePane: children) {
+          if(n.getCoordination().equals(new Pair<>(nodePane.getLayoutX(),nodePane.getLayoutY()))){
+            planePane.getChildren().remove(nodePane);
+            break;
+          }
+        }
+    }
+    plane.clearNodes();
   }
 
   public void onAboutClick(ActionEvent actionEvent) {
@@ -57,19 +67,21 @@ public class MainController {
 
   //region Plane Methods
   public void onPlaneKeyPressed(KeyEvent keyEvent) {
+
   }
 
   public void onPlaneMouseClicked(MouseEvent mouseEvent) throws Exception {
     MouseButton mouseButton = mouseEvent.getButton();
+    double x = mouseEvent.getSceneX()-planePane.getLayoutX()-Node.STANDARD_DIAMETER/2;
+    double y = mouseEvent.getSceneY() - planePane.getLayoutY()-Node.STANDARD_DIAMETER/2;
+    //TODO Add Node || Select Node/Connection
+    ArrayList<Node> nodes = plane.getNodes();
+    ArrayList<Connection> connections = plane.getConnections();
     if(mouseButton.equals(MouseButton.PRIMARY)) {
       if (keysPressed.size() == 1 && keysPressed.contains("SHIFT")) {
         //TODO Add Connection
       } else if (keysPressed.size()== 0) {
-        double x = mouseEvent.getSceneX()-planePane.getLayoutX()-Node.STANDARD_DIAMETER/2;
-        double y = mouseEvent.getSceneY() - planePane.getLayoutY()-Node.STANDARD_DIAMETER/2;
-        //TODO Add Node || Select Node/Connection
-        ArrayList<Node> nodes = plane.getNodes();
-        ArrayList<Connection> connections = plane.getConnections();
+
 
         for(Connection c : connections) {
 
@@ -113,6 +125,24 @@ public class MainController {
       }
     } else if (mouseButton.equals(MouseButton.SECONDARY)) {
       //TODO remove Node/Connection
+      Node isNode = null;
+      for(Node n: nodes) {
+        if(n.getCoordination().isBiggerOrEqual(new Pair<>(x-Node.STANDARD_DIAMETER/2,y-Node.STANDARD_DIAMETER/2))
+            && n.getCoordination().isSmallerOrEqual(new Pair<>(x+Node.STANDARD_DIAMETER/2,y+Node.STANDARD_DIAMETER/2))) {
+          isNode = n;
+          break;
+        }
+      }
+      if(isNode!=null){
+        plane.removeNode(isNode);
+        ArrayList<javafx.scene.Node> children = new ArrayList<>(planePane.getChildren());
+        for(javafx.scene.Node n: children) {
+          if(isNode.getCoordination().equals(new Pair<>(n.getLayoutX(),n.getLayoutY()))){
+            planePane.getChildren().remove(n);
+            break;
+          }
+        }
+      }
     }
   }
 

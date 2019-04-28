@@ -28,6 +28,8 @@ public class Connection implements Serializable {
     this();
     this.from = from;
     this.to = to;
+    this.from.addGoingTo(this);
+    this.to.addComingFrom(this);
   }
   public Connection(Node from, Node to, double arc) {
     this(from, to);
