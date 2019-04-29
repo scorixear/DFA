@@ -30,5 +30,6 @@ public class Main extends Application {
     MainController controller = fxmlLoader.getController();
     rootScene.setOnKeyPressed(controller::onPlaneKeyPressed);
     rootScene.setOnKeyReleased(controller::onPlaneKeyReleased);
+    controller.setResizeListener(primaryStage);
   }
 }

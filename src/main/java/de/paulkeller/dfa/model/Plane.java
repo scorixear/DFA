@@ -44,17 +44,17 @@ public class Plane implements Serializable {
 
   /**
    * Loads a Plane Object from a given Path
-   * @param filename
+   * @param f
    * @return
    * @throws IOException
    * @throws ClassNotFoundException
    */
-  public static Plane load(String filename) throws IOException, ClassNotFoundException {
-    File f = new File(filename);
+  public static Plane load(File f) throws IOException, ClassNotFoundException {
     InputStream fos = new FileInputStream(f);
     ObjectInputStream o = new ObjectInputStream(fos);
     Plane p = (Plane) o.readObject();
     fos.close();
+    System.out.println(p.connections);
     return p;
   }
 
@@ -118,13 +118,13 @@ public class Plane implements Serializable {
 
   /**
    * saves this plane object to a file
-   * @param filename
+   * @param f
    * @throws IOException
    */
-  public void save(String filename) throws IOException {
-    File f = new File(filename);
-    if (!f.exists())
-      f.createNewFile();
+  public void save(File f) throws IOException {
+    if (f.exists())
+      f.delete();
+    f.createNewFile();
     OutputStream fos = new FileOutputStream(f);
     ObjectOutputStream o = new ObjectOutputStream(fos);
     o.writeObject(this);
@@ -167,6 +167,22 @@ public class Plane implements Serializable {
    */
   public ArrayList<Node> getAllNodes() {
     return nodes;
+  }
+
+  public Pair<Double, Double> getTopleft() {
+    return topleft;
+  }
+
+  public void setTopleft(Pair<Double, Double> topleft) {
+    this.topleft = topleft;
+  }
+
+  public Pair<Double, Double> getBottomright() {
+    return bottomright;
+  }
+
+  public void setBottomright(Pair<Double, Double> bottomright) {
+    this.bottomright = bottomright;
   }
 
   /**

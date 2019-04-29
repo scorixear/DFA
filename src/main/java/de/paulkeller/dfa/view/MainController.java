@@ -4,11 +4,17 @@ import de.paulkeller.dfa.model.Connection;
 import de.paulkeller.dfa.model.Node;
 import de.paulkeller.dfa.model.Pair;
 import de.paulkeller.dfa.model.Plane;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -37,18 +43,82 @@ public class MainController {
     selectedConnection = null;
     dragedNode=null;
     isNodeDragStart=false;
+  }
 
+  public void setResizeListener(Stage stage) {
+    stage.widthProperty().addListener((observable, oldValue, newValue) -> onResizeWidth(oldValue,newValue));
+    stage.heightProperty().addListener(((observable, oldValue, newValue) -> onResizeHeight(oldValue,newValue)));
+  }
+
+  private void onResizeHeight(Number oldValue, Number newValue) {
+    plane.setBottomright(new Pair<>(plane.getBottomright().getX(),plane.getBottomright().getY()+newValue.doubleValue()-oldValue.doubleValue()));
+  }
+
+  private void onResizeWidth(Number oldValue,Number newValue) {
+    plane.setBottomright(new Pair<>(plane.getBottomright().getX()+newValue.doubleValue()-oldValue.doubleValue(),plane.getBottomright().getY()));
   }
 
   //region Menu Methods
-  public void onSaveClick(ActionEvent actionEvent) {
+  public void onSaveClick(ActionEvent actionEvent) throws IOException {
+    FileChooser fileChooser = new FileChooser();
+
+    FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("DFA files (*.dfa)","*.dfa");
+    fileChooser.getExtensionFilters().add(extensionFilter);
+
+    File file = fileChooser.showSaveDialog(new Stage());
+
+    if(file!=null){
+      plane.save(file);
+    }
+  }
+  public void onLoadClick(ActionEvent actionEvent) throws Exception {
+    FileChooser fileChooser = new FileChooser();
+
+    FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("DFA files (*.dfa)","*.dfa");
+    fileChooser.getExtensionFilters().add(extensionFilter);
+
+    File file = fileChooser.showOpenDialog(new Stage());
+    if(file!=null) {
+      onClearClick(null);
+      plane = Plane.load(file);
+      planePane.getScene().getWindow().setWidth((plane.getBottomright().getX()-plane.getTopleft().getX())/2);
+      planePane.getScene().getWindow().setHeight((plane.getBottomright().getY()-plane.getTopleft().getY())/2+50);
+      ArrayList<NodePane> addedNodes = new ArrayList<>();
+      for (Node n: plane.getNodes()) {
+
+        NodePane pane = placeGraphicNode(n);
+        addedNodes.add(pane);
+      }
+      System.out.println(plane.getConnections());
+      for(Connection c:plane.getConnections()) {
+        NodePane startNode=null;
+        NodePane endNode = null;
+        for (NodePane p: addedNodes) {
+          if(p.getNode().equals(c.getTo())){
+            endNode = p;
+          }else if(p.getNode().equals(c.getFrom())) {
+            startNode = p;
+          }else if(startNode!=null && endNode != null) {
+            break;
+          }
+        }
+        ConnectionCurve curve = new ConnectionCurve("/fxml/Connection.fxml",c,this,startNode);
+        curve.setEndNode(endNode);
+        if(curve.getStartNode()!=null) {
+          System.out.println("updateStartCode");
+          updateStartCode(curve.getStartNode().getLayoutX(),curve.getStartNode().getLayoutY(),curve);
+        }
+        updateEndCode(curve.getEndNode().getLayoutX(), curve.getEndNode().getLayoutY(),curve);
+        planePane.getChildren().add(curve);
+      }
+    }
   }
 
-  public void onSaveAsClick(ActionEvent actionEvent) {
+  public void onSaveAsClick(ActionEvent actionEvent) throws IOException, ClassNotFoundException {
+
   }
 
-  public void onLoadClick(ActionEvent actionEvent) {
-  }
+
 
   public void onClearClick(ActionEvent actionEvent) {
     ArrayList<javafx.scene.Node> children = new ArrayList<>(planePane.getChildren());
@@ -209,7 +279,6 @@ public class MainController {
         currentConnection.setEndY(0);
         updateStartCode(endx,endy,currentConnection);
         planePane.getChildren().add(currentConnection);
-        selectedNode = null;
       }else {
         //TODO Start on plane
         currentConnection = new ConnectionCurve("/fxml/Connection.fxml", null, this,null);
@@ -280,7 +349,7 @@ public class MainController {
           }
         }
         if(secondSelectedNode!=null) {
-          Connection c = new Connection(isNode, secondSelectedNode.getNode());
+          Connection c = new Connection(selectedNode.getNode(), secondSelectedNode.getNode());
           double endx = secondSelectedNode.getLayoutX()+secondSelectedNode.getNode().getDiameter()/2;
           double endy = secondSelectedNode.getLayoutY()+secondSelectedNode.getNode().getDiameter()/2;
           Pair<Double, Double> calculated = calculateDiameterDiff(endx, endy, secondSelectedNode.getNode().getDiameter(),currentConnection.getControlX(), currentConnection.getControlY());
@@ -288,6 +357,7 @@ public class MainController {
           currentConnection.setEndX(calculated.getX());
           currentConnection.setEndY(calculated.getY());
           currentConnection = null;
+          plane.addConnection(c);
           return;
         }
       }
@@ -370,13 +440,14 @@ public class MainController {
   }
   //endregion Plane Methods
 
-  private void placeGraphicNode(Node n) throws Exception {
+  private NodePane placeGraphicNode(Node n) throws Exception {
     NodePane node = new NodePane("/fxml/Node.fxml", n, this);
     node.setLayoutX(n.getCoordination().getX());
     node.setLayoutY(n.getCoordination().getY());
     node.setPrefSize(n.getDiameter(), n.getDiameter());
     node.setText(n.getName());
     planePane.getChildren().add(node);
+    return node;
   }
 
   public void setSelectedNode(NodePane node) {
