@@ -66,8 +66,16 @@ public class ConnectionCurve extends Pane {
     quadcurve.setX(x-getLayoutX());
 
     head.setLayoutX(x-getLayoutX());
-    double diffx = getEndX()-getControlX();
-    double diffy = getEndY()-getControlY();
+    double diffx;
+    double diffy;
+    if(endNode!=null) {
+      diffx = endNode.getNode().getCoordination().getX()+endNode.getNode().getDiameter()/2-getEndX();
+      diffy = endNode.getNode().getCoordination().getY()+endNode.getNode().getDiameter()/2-getEndY();
+    }else {
+      diffx = getEndX()-getControlX();
+      diffy = getEndY()-getControlY();
+    }
+
 
     double length = Math.sqrt((diffx*diffx)+(diffy*diffy));
     diffx =  -(diffx/length);

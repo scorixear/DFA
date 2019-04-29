@@ -106,7 +106,7 @@ public class MainController {
         curve.setEndNode(endNode);
         if(curve.getStartNode()!=null) {
           System.out.println("updateStartCode");
-          updateStartCode(curve.getStartNode().getLayoutX(),curve.getStartNode().getLayoutY(),curve);
+          updateStartCode(curve.getStartNode().getLayoutX(),curve.getStartNode().getLayoutY(),curve, false);
         }
         updateEndCode(curve.getEndNode().getLayoutX(), curve.getEndNode().getLayoutY(),curve);
         planePane.getChildren().add(curve);
@@ -277,7 +277,8 @@ public class MainController {
         double endy = selectedNode.getLayoutY()+selectedNode.getNode().getDiameter()/2;
         currentConnection.setEndX(0);
         currentConnection.setEndY(0);
-        updateStartCode(endx,endy,currentConnection);
+
+        updateStartCode(endx,endy,currentConnection, false);
         planePane.getChildren().add(currentConnection);
       }else {
         //TODO Start on plane
@@ -339,7 +340,7 @@ public class MainController {
         }
       }
       if (isNode != null) {
-        //TODO FROM NODE TO NODE
+        //TODO TO NODE
         NodePane secondSelectedNode = null;
         ArrayList<javafx.scene.Node> children = new ArrayList<>(planePane.getChildren());
         for (javafx.scene.Node n : children) {
@@ -349,15 +350,19 @@ public class MainController {
           }
         }
         if(secondSelectedNode!=null) {
-          Connection c = new Connection(selectedNode.getNode(), secondSelectedNode.getNode());
+
+          Connection c = new Connection(selectedNode!=null?selectedNode.getNode():null, secondSelectedNode.getNode());
           double endx = secondSelectedNode.getLayoutX()+secondSelectedNode.getNode().getDiameter()/2;
           double endy = secondSelectedNode.getLayoutY()+secondSelectedNode.getNode().getDiameter()/2;
           Pair<Double, Double> calculated = calculateDiameterDiff(endx, endy, secondSelectedNode.getNode().getDiameter(),currentConnection.getControlX(), currentConnection.getControlY());
           currentConnection.setEndNode(secondSelectedNode);
           currentConnection.setEndX(calculated.getX());
           currentConnection.setEndY(calculated.getY());
+          currentConnection.setControlX(currentConnection.getStartX() + ((currentConnection.getEndX() - currentConnection.getStartX()) / 2));
+          currentConnection.setControlY(currentConnection.getStartY()+((currentConnection.getEndY()-currentConnection.getStartY())/2));
           currentConnection = null;
           plane.addConnection(c);
+          selectedNode=null;
           return;
         }
       }
@@ -380,7 +385,7 @@ public class MainController {
         currentConnection.setEndX(x);
         currentConnection.setEndY(y);
         if(currentConnection.getStartNode()!=null)
-         updateStartCode(currentConnection.getStartNode().getLayoutX()+currentConnection.getStartNode().getNode().getDiameter()/2,currentConnection.getStartNode().getLayoutY()+currentConnection.getStartNode().getNode().getDiameter()/2,currentConnection);
+         updateStartCode(currentConnection.getStartNode().getLayoutX()+currentConnection.getStartNode().getNode().getDiameter()/2,currentConnection.getStartNode().getLayoutY()+currentConnection.getStartNode().getNode().getDiameter()/2,currentConnection, true);
       }
     }else if(keysPressed.size()==0 && mouseButton.equals(MouseButton.PRIMARY)&&(isNodeDragStart||dragedNode!=null)) {
       dragedNode=selectedNode;
@@ -396,10 +401,11 @@ public class MainController {
             updateEndCode(x+selectedNode.getNode().getDiameter()/2,y+selectedNode.getNode().getDiameter()/2,(ConnectionCurve)node);
             if(((ConnectionCurve) node).getStartNode()!=null) {
               NodePane startNode = ((ConnectionCurve) node).getStartNode();
-              updateStartCode(startNode.getLayoutX()+startNode.getNode().getDiameter()/2, startNode.getLayoutY()+startNode.getNode().getDiameter()/2,(ConnectionCurve)node);
+              updateStartCode(startNode.getLayoutX()+startNode.getNode().getDiameter()/2, startNode.getLayoutY()+startNode.getNode().getDiameter()/2,(ConnectionCurve)node, false);
             }
+
           }else if(((ConnectionCurve) node).getStartNode()!=null&&((ConnectionCurve) node).getStartNode().equals(selectedNode)) {
-            updateStartCode(x+selectedNode.getNode().getDiameter()/2,y+selectedNode.getNode().getDiameter()/2,(ConnectionCurve)node);
+            updateStartCode(x+selectedNode.getNode().getDiameter()/2,y+selectedNode.getNode().getDiameter()/2,(ConnectionCurve)node, false);
             NodePane endNode = ((ConnectionCurve) node).getEndNode();
             updateEndCode(endNode.getLayoutX()+endNode.getNode().getDiameter()/2, endNode.getLayoutY()+endNode.getNode().getDiameter()/2,(ConnectionCurve)node);
           }
@@ -409,20 +415,40 @@ public class MainController {
   }
 
 
-  private void updateStartCode(double x, double y, ConnectionCurve curve) {
+  private void updateStartCode(double x, double y, ConnectionCurve curve, boolean straight) {
     Pair<Double, Double> calculated = calculateDiameterDiff(x,y,curve.getStartNode().getNode().getDiameter(),curve.getControlX(),curve.getControlY());
+    double oldstartx = curve.getStartX();
+    double oldstarty = curve.getStartY();
     curve.setStartX(calculated.getX());
     curve.setStartY(calculated.getY());
-    curve.setControlX(curve.getStartX() + ((curve.getEndX() - curve.getStartX()) / 2));
-    curve.setControlY(curve.getStartY() + ((curve.getEndY() - curve.getStartY()) / 2));
+    if((curve.getControlX()==curve.getEndX()&&curve.getControlY()==curve.getEndY())||straight) {
+      curve.setControlX(curve.getStartX() + ((curve.getEndX() - curve.getStartX()) / 2));
+      curve.setControlY(curve.getStartY() + ((curve.getEndY() - curve.getStartY()) / 2));
+    }else{
+      double newx = curve.getStartX()+(curve.getControlX()-oldstartx);
+      double newy = curve.getStartY()+(curve.getControlY()-oldstarty);
+      curve.setControlX(newx);
+      curve.setControlY(newy);
+    }
+
+
   }
 
   private void updateEndCode(double x, double y, ConnectionCurve curve) {
     Pair<Double, Double> calculated = calculateDiameterDiff(x,y,curve.getEndNode().getNode().getDiameter(),curve.getControlX(),curve.getControlY());
+    double oldendx = curve.getEndX();
+    double oldendy = curve.getEndY();
     curve.setEndX(calculated.getX());
     curve.setEndY(calculated.getY());
-    curve.setControlX(curve.getStartX() + ((curve.getEndX() - curve.getStartX()) / 2));
-    curve.setControlY(curve.getStartY() + ((curve.getEndY() - curve.getStartY()) / 2));
+    if(curve.getControlX()==curve.getStartX()&&curve.getControlY()==curve.getStartY()) {
+      curve.setControlX(curve.getStartX() + ((curve.getEndX() - curve.getStartX()) / 2));
+      curve.setControlY(curve.getStartY() + ((curve.getEndY() - curve.getStartY()) / 2));
+    } else{
+     double newx = curve.getEndX()+(curve.getControlX()-oldendx);
+     double newy = curve.getEndY()+(curve.getControlY()-oldendy);
+      curve.setControlX(newx);
+      curve.setControlY(newy);
+    }
   }
 
 
@@ -440,7 +466,7 @@ public class MainController {
   }
   //endregion Plane Methods
 
-  private NodePane placeGraphicNode(Node n) throws Exception {
+  private NodePane placeGraphicNode(Node n) {
     NodePane node = new NodePane("/fxml/Node.fxml", n, this);
     node.setLayoutX(n.getCoordination().getX());
     node.setLayoutY(n.getCoordination().getY());
@@ -450,7 +476,7 @@ public class MainController {
     return node;
   }
 
-  public void setSelectedNode(NodePane node) {
+  void setSelectedNode(NodePane node) {
     selectedNode = node;
   }
 }
